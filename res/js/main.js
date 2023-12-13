@@ -1,5 +1,16 @@
+import { Character } from "./characters/Character.js";
+import { Background } from "./ui/basic-utils.js";
+
+
+const background = new Background();
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+// vlastnosti objektu - atributy
+
+
+
 
 const keys = {};
 //   Space: true
@@ -35,8 +46,7 @@ const resizeCanvas = () => {
     canvas.height = 720;
 };
 const clearCanvas = () => {
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, 1280, 720)
+    background.draw(ctx);
 };
 const update = () => {};
 const render = () => {};
