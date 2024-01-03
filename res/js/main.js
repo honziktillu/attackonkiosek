@@ -1,16 +1,11 @@
 import { Character } from "./characters/Character.js";
 import { Background } from "./ui/basic-utils.js";
 
-
+const frafta = new Character("Frafta", 1000, 1, 0.1, 0);
 const background = new Background();
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-
-// vlastnosti objektu - atributy
-
-
-
 
 const keys = {};
 //   Space: true
@@ -18,6 +13,10 @@ const keys = {};
 
 document.addEventListener("keydown", (e) => {
     keys[e.code] = true;
+});
+
+document.addEventListener("keyup", (e) => {
+    keys[e.code] = false;
 });
 
 //hlavni smycka hry
@@ -48,8 +47,21 @@ const resizeCanvas = () => {
 const clearCanvas = () => {
     background.draw(ctx);
 };
-const update = () => {};
-const render = () => {};
+const update = () => {
+    if (frafta.position.x >= 640) {
+        frafta.update(1);
+        frafta.hp--;
+        console.log(frafta.hp);
+        if (frafta.hp <= 0) {
+            frafta.update(2);
+        }
+    } else {
+        frafta.update(0);
+    }
+};
+const render = () => {
+    frafta.draw(ctx);
+};
 const getFps = () => {};
 
 
