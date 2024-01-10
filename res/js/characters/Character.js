@@ -1,3 +1,4 @@
+
 export class Character {
   constructor(name, hp, dmg, speed, type) {
     this.name = name;
@@ -9,7 +10,7 @@ export class Character {
     this.img.src = this.path;
     this.ratio = 0.3;
     this.size = {
-      width: 336 * this.ratio,
+      width: 600 * this.ratio,
       height: 634 * this.ratio,
     };
     this.position = {
@@ -20,37 +21,56 @@ export class Character {
       x: 1 * this.speed,
     };
     this.side = 0;
+    this.frame = {
+      counter: 0,
+      index: 1,
+      maxIndex: 11,
+      width: 100,
+      height: 100,
+    }
   }
 
   setType(type) {
     const characterTypes = [
-      "./res/img/characters/fraftik4brady.png",
+      "./res/img/characters/frafticekWalk.png",
       "./res/img/characters/unrealurbic.png",
     ];
     this.path = characterTypes[type];
   }
 
-  draw(ctx) {
-    ctx.save();
-    if (this.side === 0) {
-      ctx.drawImage(
-        this.img,
-        this.position.x,
-        this.position.y,
-        this.size.width,
-        this.size.height
-      );
-      return ctx.restore();
+  animate(ctx) {
+    let movementX = this.position.x;
+    if (this.side === 1) {
+      movementX = 0;
     }
-    ctx.translate(this.position.x + this.size.width, 0);
-    ctx.scale(-1, 1);
     ctx.drawImage(
       this.img,
+      this.frame.width * this.frame.index, 
       0,
+      this.frame.width,
+      this.frame.height,
+      movementX,
       this.position.y,
       this.size.width,
       this.size.height
     );
+    if (this.frame.index == this.frame.maxIndex) return this.frame.index = 0;
+    this.frame.counter++;
+    if (this.frame.counter % 2 == 0) {
+      this.frame.index++;
+    }
+  }
+
+  draw(ctx) {
+    
+    ctx.save();
+    if (this.side === 0) {
+      this.animate(ctx);
+      return ctx.restore();
+    }
+    ctx.translate(this.position.x + this.size.width, 0);
+    ctx.scale(-1, 1);
+    this.animate(ctx);
     ctx.restore();
   }
 

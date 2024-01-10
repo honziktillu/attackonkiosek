@@ -2,7 +2,7 @@ import { Character } from "./characters/Character.js";
 import { Background } from "./ui/basic-utils.js";
 
 const frafta = new Character("Frafta", 1000, 1, 2, 0);
-const unrealurbic = new Character("UnrealUrbic", 900, 1, 0.1, 1);
+//const unrealurbic = new Character("UnrealUrbic", 900, 1, 0.1, 1);
 const background = new Background();
 
 const canvas = document.getElementById("canvas");
@@ -50,11 +50,10 @@ const clearCanvas = () => {
 };
 const update = () => {
     frafta.update(0);
-    unrealurbic.update(0);
 };
 const render = () => {
     frafta.draw(ctx);
-    unrealurbic.draw(ctx);
+    //unrealurbic.draw(ctx);
 };
 const getFps = () => {};
 
