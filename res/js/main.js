@@ -2,7 +2,8 @@ import { Character } from "./characters/Character.js";
 import { Background } from "./ui/basic-utils.js";
 
 const background = new Background();
-const characters = [];
+const friendlyCharacters = [];
+const enemyCharacters = [];
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -11,67 +12,75 @@ const keys = {};
 //   Space: false
 
 document.addEventListener("keydown", (e) => {
-    keys[e.code] = true;
+  keys[e.code] = true;
 });
 
 document.addEventListener("keyup", (e) => {
-    keys[e.code] = false;
+  keys[e.code] = false;
 });
 
 //hlavni smycka hry
 const gameLoop = () => {
+  //resizeCanvas
+  resizeCanvas();
 
-    //resizeCanvas
-    resizeCanvas();
+  //clearCanvas
+  clearCanvas();
 
-    //clearCanvas
-    clearCanvas();
+  //update
+  update();
 
-    //update
-    update();
+  //render
+  render();
 
-    //render
-    render()
+  //fps
+  getFps();
 
-    //fps
-    getFps();
-
-    window.requestAnimationFrame(gameLoop);
-}
+  window.requestAnimationFrame(gameLoop);
+};
 
 const resizeCanvas = () => {
-    canvas.width = 1280;
-    canvas.height = 720;
+  canvas.width = 1280;
+  canvas.height = 720;
 };
 const clearCanvas = () => {
-    background.draw(ctx);
+  background.draw(ctx);
 };
 const update = () => {
-    characters.map((c) => {
-        c.update(0);
-    });
+  detectCollision();
 };
 const render = () => {
-    characters.map((c) => {
-        c.draw(ctx);
-    });
+  friendlyCharacters.map((c) => {
+    c.draw(ctx);
+  });
+  enemyCharacters.map((c) => {
+    c.draw(ctx);
+  });
 };
 const getFps = () => {};
 
+const detectCollision = () => {
+  friendlyCharacters.map((friendly) => {
+    enemyCharacters.map((enemy) => {
+      Character.detectCollision(friendly, enemy);
+    });
+  });
+};
+
 const loadData = async () => {
-    const charactersData = await fetch("./res/data/characters.json");
-    const convertedData = await charactersData.json();
-    Character.charactersData = convertedData;
-}
+  const charactersData = await fetch("./res/data/characters.json");
+  const convertedData = await charactersData.json();
+  Character.charactersData = convertedData;
+};
 
 const prerender = () => {
-    characters.push(new Character("Frafticek"));
-    characters.push(new Character("UnrealUrbic"));
-}
+  friendlyCharacters.push(new Character("Frafticek"));
+  enemyCharacters.push(new Character("UnrealUrbic"));
+};
 
 //Kdyz se nam stranka nacte, spustime fci
 window.onload = async () => {
-    await loadData();
-    prerender();
-    window.requestAnimationFrame(gameLoop);
-}
+  await loadData();
+  prerender();
+  window.requestAnimationFrame(gameLoop);
+};

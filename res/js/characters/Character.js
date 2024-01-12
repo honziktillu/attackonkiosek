@@ -17,6 +17,7 @@ export class Character {
       width: 100,
       height: 100,
     };
+    this.state = 0;
   }
 
   setType(type) {
@@ -25,6 +26,7 @@ export class Character {
         this.sprites = obj.sprites;
         this.name = obj.name;
         this.hp = obj.stats.hp;
+        this.maxHp = this.hp;
         this.dmg = obj.stats.dmg;
         this.speed = obj.stats.speed;
         this.side = obj.stats.side;
@@ -67,16 +69,30 @@ export class Character {
     ctx.save();
     if (this.side === 0) {
       this.animate(ctx);
+      /* ctx.fillStyle = "green";
+      ctx.fillRect(
+        this.position.x + this.size.width / 2,
+        this.position.y,
+        this.size.width * 0.2,
+        this.size.height
+      );*/
       return ctx.restore();
     }
     ctx.translate(this.position.x + this.size.width, 0);
     ctx.scale(-1, 1);
     this.animate(ctx);
     ctx.restore();
+    /*ctx.fillStyle = "red";
+    ctx.fillRect(
+      this.position.x + this.size.width * 0.3,
+      this.position.y,
+      this.size.width * 0.2,
+      this.size.height
+    );*/
   }
 
-  update(state) {
-    switch (state) {
+  update() {
+    switch (this.state) {
       case 0:
         this.img.src = this.sprites.movement.path;
         this.frame.maxIndex = this.sprites.movement.frames;
@@ -89,19 +105,52 @@ export class Character {
         this.frame.maxIndex = this.sprites.attack.frames;
         this.frame.width = this.sprites.movement.size.width;
         this.frame.height = this.sprites.movement.size.height;
-        console.log(this.name + " attacks!");
         break;
       case 2:
         console.log(this.name + " umira");
-        this.position.x = 0;
-        this.hp = 1000;
+        this.hp = this.maxHp;
+        if (this.side === 0) return this.position.x = -300;
+        this.position.x = 1600
         break;
       default:
     }
   }
 
+  attack(enemy) {
+    if (enemy === undefined) {
+      enemy.state = 2;
+    }
+    enemy.hp -= this.dmg;
+    if (enemy.hp <= 0) {
+      enemy.state = 2;
+    }
+  }
+
   move() {
     this.position.x += this.velocity.x;
+  }
+
+  static detectCollision(friendly, enemy) {
+    if (
+      friendly.position.x <
+        enemy.position.x + enemy.size.width * 0.3 + enemy.size.width * 0.2 &&
+      friendly.position.x +
+        friendly.size.width / 2 +
+        friendly.size.width * 0.2 >
+        enemy.position.x + enemy.size.width * 0.3
+    ) {
+      friendly.state = 1;
+      enemy.state = 1;
+      friendly.attack(enemy);
+      enemy.attack(friendly);
+      friendly.update();
+      enemy.update();
+      return;
+    }
+    friendly.state = 0;
+    enemy.state = 0;
+    friendly.update();
+    enemy.update();
   }
 }
 // vlastnosti objektu - atributy
