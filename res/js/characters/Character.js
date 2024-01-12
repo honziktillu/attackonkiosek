@@ -1,10 +1,7 @@
-
 export class Character {
-  constructor(name, hp, dmg, speed, type) {
-    this.name = name;
-    this.hp = hp;
-    this.dmg = dmg;
-    this.speed = speed;
+  static charactersData;
+
+  constructor(type) {
     this.img = new Image();
     this.setType(type);
     this.img.src = this.path;
@@ -13,29 +10,34 @@ export class Character {
       width: 600 * this.ratio,
       height: 634 * this.ratio,
     };
-    this.position = {
-      x: 100,
-      y: 350,
-    };
-    this.velocity = {
-      x: 1 * this.speed,
-    };
-    this.side = 0;
     this.frame = {
       counter: 0,
       index: 1,
       maxIndex: 11,
       width: 100,
       height: 100,
-    }
+    };
   }
 
   setType(type) {
-    const characterTypes = [
-      "./res/img/characters/frafticekWalk.png",
-      "./res/img/characters/unrealurbic.png",
-    ];
-    this.path = characterTypes[type];
+    Character.charactersData.map((obj) => {
+      if (obj.name === type) {
+        this.sprites = obj.sprites;
+        this.name = obj.name;
+        this.hp = obj.stats.hp;
+        this.dmg = obj.stats.dmg;
+        this.speed = obj.stats.speed;
+        this.side = obj.stats.side;
+        this.velocity = {
+          x: obj.stats.velocity * this.speed,
+        };
+        this.position = {
+          x: obj.stats.position,
+          y: 350,
+        };
+        return;
+      }
+    });
   }
 
   animate(ctx) {
@@ -45,7 +47,7 @@ export class Character {
     }
     ctx.drawImage(
       this.img,
-      this.frame.width * this.frame.index, 
+      this.frame.width * this.frame.index,
       0,
       this.frame.width,
       this.frame.height,
@@ -54,15 +56,14 @@ export class Character {
       this.size.width,
       this.size.height
     );
-    if (this.frame.index == this.frame.maxIndex) return this.frame.index = 0;
+    if (this.frame.index == this.frame.maxIndex) return (this.frame.index = 0);
     this.frame.counter++;
-    if (this.frame.counter % 2 == 0) {
+    if (this.frame.counter % 5 == 0) {
       this.frame.index++;
     }
   }
 
   draw(ctx) {
-    
     ctx.save();
     if (this.side === 0) {
       this.animate(ctx);
@@ -77,9 +78,17 @@ export class Character {
   update(state) {
     switch (state) {
       case 0:
+        this.img.src = this.sprites.movement.path;
+        this.frame.maxIndex = this.sprites.movement.frames;
+        this.frame.width = this.sprites.movement.size.width;
+        this.frame.height = this.sprites.movement.size.height;
         this.move();
         break;
       case 1:
+        this.img.src = this.sprites.attack.path;
+        this.frame.maxIndex = this.sprites.attack.frames;
+        this.frame.width = this.sprites.movement.size.width;
+        this.frame.height = this.sprites.movement.size.height;
         console.log(this.name + " attacks!");
         break;
       case 2:
@@ -93,14 +102,6 @@ export class Character {
 
   move() {
     this.position.x += this.velocity.x;
-    if (this.position.x >= 1100) {
-      this.velocity.x *= -1;
-      this.side = 1;
-    }
-    if (this.position.x <= 90) {
-      this.velocity.x *= -1;
-      this.side = 0;
-    }
   }
 }
 // vlastnosti objektu - atributy

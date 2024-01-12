@@ -1,10 +1,8 @@
 import { Character } from "./characters/Character.js";
 import { Background } from "./ui/basic-utils.js";
 
-const frafta = new Character("Frafta", 1000, 1, 2, 0);
-//const unrealurbic = new Character("UnrealUrbic", 900, 1, 0.1, 1);
 const background = new Background();
-
+const characters = [];
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -49,17 +47,31 @@ const clearCanvas = () => {
     background.draw(ctx);
 };
 const update = () => {
-    frafta.update(0);
+    characters.map((c) => {
+        c.update(0);
+    });
 };
 const render = () => {
-    frafta.draw(ctx);
-    //unrealurbic.draw(ctx);
+    characters.map((c) => {
+        c.draw(ctx);
+    });
 };
 const getFps = () => {};
 
+const loadData = async () => {
+    const charactersData = await fetch("./res/data/characters.json");
+    const convertedData = await charactersData.json();
+    Character.charactersData = convertedData;
+}
+
+const prerender = () => {
+    characters.push(new Character("Frafticek"));
+    characters.push(new Character("UnrealUrbic"));
+}
 
 //Kdyz se nam stranka nacte, spustime fci
-window.onload = () => {
-
+window.onload = async () => {
+    await loadData();
+    prerender();
     window.requestAnimationFrame(gameLoop);
 }
