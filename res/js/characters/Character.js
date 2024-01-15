@@ -18,6 +18,7 @@ export class Character {
       height: 100,
     };
     this.state = 0;
+    this.animationSpeed = 4;
   }
 
   setType(type) {
@@ -58,10 +59,11 @@ export class Character {
       this.size.width,
       this.size.height
     );
-    if (this.frame.index == this.frame.maxIndex) return (this.frame.index = 0);
+    if (this.frame.index >= this.frame.maxIndex) return this.frame.index = 0;
     this.frame.counter++;
-    if (this.frame.counter % 5 == 0) {
+    if (this.frame.counter >= this.animationSpeed) {
       this.frame.index++;
+      this.frame.counter = 0;
     }
   }
 
@@ -109,8 +111,8 @@ export class Character {
       case 2:
         console.log(this.name + " umira");
         this.hp = this.maxHp;
-        if (this.side === 0) return this.position.x = -300;
-        this.position.x = 1600
+        if (this.side === 0) return (this.position.x = -300);
+        this.position.x = 1600;
         break;
       default:
     }

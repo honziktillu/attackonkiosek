@@ -74,8 +74,8 @@ const loadData = async () => {
 };
 
 const prerender = () => {
-  friendlyCharacters.push(new Character("Frafticek"));
-  enemyCharacters.push(new Character("UnrealUrbic"));
+  enemyCharacters.push(new Character("Frafticek"));
+  friendlyCharacters.push(new Character("UnrealUrbic"));
 };
 
 //Kdyz se nam stranka nacte, spustime fci
